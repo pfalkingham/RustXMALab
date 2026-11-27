@@ -1,8 +1,9 @@
 name: build-binaries
 
 # Builds the programs for Linux, Windows and macOS on every push to master:
-# installers for Windows (setup program) and macOS (disk image with the app), and
-# portable archives of the bare programs for all three systems. A tag named v*
+# installers for Windows (setup program) and macOS (disk image with the app), an
+# AppImage and a .deb for Linux, and portable archives of the bare programs for
+# all three systems. A tag named v*
 # (for example v0.1.0) also makes a draft release on GitHub with all of them
 # attached; publish it from the Releases page after checking.
 
@@ -17,24 +18,40 @@ env:
 
 jobs:
   linux:
-    runs-on: ubuntu-24.04
+    # Ubuntu 22.04, so the programs need glibc 2.35 or later (not the newer one of 24.04).
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - name: System libraries (X11/Wayland)
+      - name: System libraries (X11/Wayland; FUSE for the AppImage tools)
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev \
-            libwayland-dev libegl1-mesa-dev libgl1-mesa-dev
-      # The release archive: programs, menu entry, README, LICENSE, NOTICE,
-      # INSTALL.txt, THIRD-PARTY-LICENSES.txt and licenses/.
+            libwayland-dev libegl1-mesa-dev libgl1-mesa-dev libfuse2
+      # The portable archive: programs, menu entry, README, LICENSE, NOTICE,
+      # INSTALL.txt, THIRD-PARTY-LICENSES.txt and licenses/. Also writes
+      # target/dist/THIRD-PARTY-LICENSES.txt, which the packages carry.
       - run: cargo xtask dist
+      - run: cargo install cargo-packager --locked --version 0.11.8
+      - name: AppImage and .deb
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: "1"
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          cargo packager --release --formats appimage,deb
+          mkdir -p dist
+          cp target/dist/*.tar.gz dist/
+          cp target/release/*.AppImage "dist/rustxmalab-${version}-x86_64.AppImage"
+          cp target/release/*.deb "dist/rustxmalab_${version}_amd64.deb"
       - uses: actions/upload-artifact@v4
         with:
           name: linux
-          path: target/dist/*.tar.gz
+          path: |
+            dist/*.tar.gz
+            dist/*.AppImage
+            dist/*.deb
 
   windows:
     runs-on: windows-latest
