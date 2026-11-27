@@ -51,7 +51,7 @@ homepage = "https://github.com/pfalkingham/RustXMALab"
 copyright = "Copyright Peter Falkingham. Based on XMALab, copyright Brown University. GPL-3.0-only."
 category = "Education"
 license-file = "../../LICENSE"
-icons = ["assets/icons/RustXMALab-Icon.png"]
+icons = ["assets/icons/RustXMALab-Icon.png", "assets/icons/RustXMALab.icns"]
 resources = [
     "../../README.md",
     "../../LICENSE",
