@@ -38,8 +38,9 @@ egui_kittest.workspace = true
 xma-oracle.workspace = true
 
 # Installers made by cargo-packager in CI (.github/workflows/build-binaries.yml):
-# the macOS application bundle and the Windows setup program. Paths are relative
-# to this folder. `cargo xtask licenses` writes target/dist/THIRD-PARTY-LICENSES.txt
+# the macOS application bundle, the Windows setup program (installs into Program
+# Files, so it asks for administrator rights), the Linux AppImage and .deb.
+# Paths are relative to this folder. `cargo xtask licenses` writes target/dist/THIRD-PARTY-LICENSES.txt
 # before packaging.
 [package.metadata.packager]
 product-name = "RustXMALab"
@@ -72,5 +73,5 @@ main = false
 minimum-system-version = "11.0"
 
 [package.metadata.packager.nsis]
-installer-mode = "currentUser"
+installer-mode = "perMachine"
 installer-icon = "assets/icons/RustXMALab.ico"

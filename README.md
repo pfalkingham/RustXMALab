@@ -47,8 +47,9 @@ Ready-made programs are on the
 | macOS, Apple Silicon, macOS 11 or later | `rustxmalab-<version>-aarch64-macos.dmg` | `rustxmalab-<version>-aarch64-macos.tar.gz` |
 | Linux, 64-bit PC | `rustxmalab-<version>-x86_64.AppImage`, or `rustxmalab_<version>_amd64.deb` for Ubuntu and Debian | `rustxmalab-<version>-x86_64-linux.tar.gz`, with a menu entry; see its `INSTALL.txt` |
 
-- **Windows:** run the setup program. It installs for your user only, so it
-  needs no administrator rights, and adds RustXMALab to the Start menu. The
+- **Windows:** run the setup program. It installs into
+  `C:\Program Files\RustXMALab` (so it asks for administrator rights) and
+  adds RustXMALab to the Start menu. The
   installer is not yet signed, so Windows may say "Windows protected your PC":
   click "More info", then "Run anyway".
 - **macOS:** open the `.dmg` and drag RustXMALab to Applications. The app is

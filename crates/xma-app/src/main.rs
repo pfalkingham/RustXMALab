@@ -9,6 +9,12 @@
 //! eframe with the wgpu renderer, as chosen by spike 1 (`spikes/camera-view/README.md`):
 //! `WgpuConfiguration::default()` (high-performance adapter, Vulkan/Metal/DX12 with the GL
 //! fallback, `WGPU_BACKEND` and `WGPU_POWER_PREF` honoured), vsync on.
+//!
+//! On Windows a release build is a window program, not a console one, so starting it opens
+//! no console window; what it prints (`--help`, an error in the options) is then not shown.
+//! Debug builds keep the console for their output.
+
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::path::PathBuf;
 use std::process::ExitCode;

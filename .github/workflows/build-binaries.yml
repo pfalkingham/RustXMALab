@@ -66,7 +66,7 @@ jobs:
       # Writes target/dist/THIRD-PARTY-LICENSES.txt, which both packages carry.
       - run: cargo xtask licenses
       - run: cargo install cargo-packager --locked --version 0.11.8
-      - name: Setup program (cargo-packager, NSIS; installs for the current user)
+      - name: Setup program (cargo-packager, NSIS; installs into Program Files)
         run: |
           version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
           cargo packager --release --formats nsis
@@ -146,10 +146,30 @@ jobs:
         with:
           path: downloads
           merge-multiple: true
+      # Each file is attached on its own, as a direct download.
+      - name: Check the seven downloads
+        run: |
+          ls -l downloads
+          for pattern in '*-windows-setup.exe' '*-windows.zip' '*-macos.dmg' '*-macos.tar.gz' \
+                         '*.AppImage' '*.deb' '*-linux.tar.gz'; do
+            n=$(find downloads -maxdepth 1 -name "$pattern" | wc -l)
+            [ "$n" -eq 1 ] || { echo "expected one $pattern, found $n"; exit 1; }
+          done
       - name: Draft release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          cat > notes.md <<'NOTES'
+          | System | Installer | Portable (unpack and run) |
+          |---|---|---|
+          | Windows, 64-bit | `...-windows-setup.exe` | `...-windows.zip` |
+          | macOS, Apple Silicon, macOS 11 or later | `...-macos.dmg` | `...-macos.tar.gz` |
+          | Linux, 64-bit, glibc 2.35 or later | `...x86_64.AppImage`, or `..._amd64.deb` for Ubuntu and Debian | `...-linux.tar.gz` |
+
+          The installers are not yet signed, so Windows and macOS warn the first time;
+          the README's Download section says how to get past it. What is new is in
+          CHANGELOG.md.
+          NOTES
           gh release create "$GITHUB_REF_NAME" downloads/* \
             --repo "$GITHUB_REPOSITORY" --draft --title "RustXMALab ${GITHUB_REF_NAME#v}" \
-            --notes "See CHANGELOG.md for what is in this version."
+            --notes-file notes.md
