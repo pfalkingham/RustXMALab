@@ -1,15 +1,17 @@
 name: build-binaries
 
-# Builds the programs for Linux, Windows and macOS on every push to master:
-# installers for Windows (setup program) and macOS (disk image with the app), an
-# AppImage and a .deb for Linux, and portable archives of the bare programs for
-# all three systems. A tag named v*
-# (for example v0.1.0) also makes a draft release on GitHub with all of them
-# attached; publish it from the Releases page after checking.
+# Builds the programs for Linux, Windows and macOS: installers for Windows (setup
+# program) and macOS (disk image with the app), an AppImage and a .deb for Linux,
+# and portable archives of the bare programs for all three systems.
+#
+# It runs only when a tag named v* is pushed (for example v0.1.1), and then also
+# makes a draft release on GitHub with all of them attached (publish it from the
+# Releases page after checking), or when started by hand with "Run workflow" on
+# the Actions page, which builds the downloads without a release. Pushes to
+# master build nothing.
 
 on:
   push:
-    branches: [master]
     tags: ['v*']
   workflow_dispatch:
 
