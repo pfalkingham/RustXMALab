@@ -998,8 +998,13 @@ pub fn metadata(root: &Path, target: &str) -> Result<String, String> {
 }
 
 /// Writes `THIRD-PARTY-LICENSES.txt` to `out` and prints a summary.
+/// The crates are resolved for the host platform, or for the target triple in
+/// `XTASK_LICENSES_TARGET` when that is set (to check another platform's list from this one).
 pub fn write(root: &Path, out: &Path) -> Result<(), String> {
-    let target = host_target()?;
+    let target = match std::env::var("XTASK_LICENSES_TARGET") {
+        Ok(t) if !t.trim().is_empty() => t.trim().to_string(),
+        _ => host_target()?,
+    };
     let report = generate(root, &metadata(root, &target)?, &target)?;
     if let Some(dir) = out.parent() {
         std::fs::create_dir_all(dir)
