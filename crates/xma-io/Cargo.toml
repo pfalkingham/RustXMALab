@@ -1,0 +1,20 @@
+[package]
+name = "xma-io"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+xma-model.workspace = true
+xma-vision.workspace = true
+# Compression (`with-alloc`) is needed to write archives (`zip::write_archive`).
+miniz_oxide = { workspace = true, features = ["with-alloc"] }
+quick-xml.workspace = true
+
+[dev-dependencies]
+xma-oracle.workspace = true

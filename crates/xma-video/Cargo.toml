@@ -1,0 +1,19 @@
+[package]
+name = "xma-video"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+image = { workspace = true }
+# 8-bit palette TIFF, which `image` does not read, and the LZW TIFF of File > Undistort
+# sequence (`image_file::encode_tiff`); the version `image` uses.
+tiff = { version = "0.11.3", default-features = false, features = ["lzw"] }
+
+[dev-dependencies]
+xma-oracle.workspace = true

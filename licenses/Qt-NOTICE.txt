@@ -1,0 +1,32 @@
+Qt 6 (qtbase): copyright and licence
+====================================
+
+Code ported from Qt 6 qtbase, so that files are read and written as the C++ XMALab
+(built with Qt 6) reads and writes them:
+
+- crates/xma-io/src/cparse.rs: colour names and #RRGGBB strings as QColor::fromString
+  parses them (src/gui/painting/qcolor.cpp).
+- crates/xma-io/src/export/mod.rs: QFileSystemEntry::completeBaseName
+  (src/corelib/io/qfilesystementry.cpp).
+- crates/xma-io/src/xml.rs: the XML writer's escaping and layout, from
+  QXmlStreamWriterPrivate (src/corelib/serialization/qxmlstream.cpp).
+
+Licence: qtbase is offered under "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR
+GPL-2.0-only OR GPL-3.0-only". RustXMALab uses this code under GPL-3.0-only, whose text is
+LICENSE at the top of this archive.
+
+The Qt source files themselves were not on the machine this archive was made on; the
+copyright and licence lines below are those of the matching headers of Qt 6.12.0 as
+installed there (/usr/include/qt6/):
+
+QtGui/qcolor.h:
+// Copyright (C) 2020 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+
+QtCore/qxmlstream.h:
+// Copyright (C) 2016 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+
+QtCore/6.12.0/QtCore/private/qfilesystementry_p.h:
+// Copyright (C) 2016 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only

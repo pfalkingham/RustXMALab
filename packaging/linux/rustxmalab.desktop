@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=RustXMALab
+GenericName=X-ray motion analysis
+Comment=Marker tracking and 3D reconstruction from X-ray video (XROMM)
+Exec=rustxmalab %f
+Icon=rustxmalab
+Terminal=false
+StartupWMClass=rustxmalab
+Categories=Science;Biology;
+Keywords=XMALab;XROMM;X-ray;marker;tracking;

@@ -1,0 +1,105 @@
+name: build-binaries
+
+# Builds the programs for Linux, Windows and macOS on every push to master.
+# A tag named v* (for example v0.1.0) also makes a draft release on GitHub with
+# the three downloads attached; publish it from the Releases page after checking.
+
+on:
+  push:
+    branches: [master]
+    tags: ['v*']
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: System libraries (X11/Wayland)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev \
+            libwayland-dev libegl1-mesa-dev libgl1-mesa-dev
+      # The release archive: programs, menu entry, README, LICENSE, NOTICE,
+      # INSTALL.txt, THIRD-PARTY-LICENSES.txt and licenses/.
+      - run: cargo xtask dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: target/dist/*.tar.gz
+
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release --locked --bin rustxmalab --bin xma
+      - name: Package
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          stem="rustxmalab-${version}-x86_64-windows"
+          mkdir -p "dist/$stem"
+          cp target/release/rustxmalab.exe target/release/xma.exe README.md LICENSE NOTICE.md "dist/$stem/"
+          cp -r licenses "dist/$stem/"
+          cargo xtask licenses --out "dist/$stem/THIRD-PARTY-LICENSES.txt"
+          cd dist && 7z a -tzip "$stem.zip" "$stem" > /dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: dist/*.zip
+
+  macos:
+    runs-on: macos-14
+    env:
+      # Runs on macOS 11 (Big Sur) and later.
+      RUSTFLAGS: "-C link-arg=-mmacosx-version-min=11.0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release --locked --target aarch64-apple-darwin --bin rustxmalab --bin xma
+      - name: Package
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          stem="rustxmalab-${version}-aarch64-macos"
+          mkdir -p "dist/$stem"
+          cp target/aarch64-apple-darwin/release/rustxmalab target/aarch64-apple-darwin/release/xma "dist/$stem/"
+          cp README.md LICENSE NOTICE.md "dist/$stem/"
+          cp -r licenses "dist/$stem/"
+          cargo xtask licenses --out "dist/$stem/THIRD-PARTY-LICENSES.txt"
+          tar -czf "dist/$stem.tar.gz" -C dist "$stem"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: dist/*.tar.gz
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [linux, windows, macos]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: downloads
+          merge-multiple: true
+      - name: Draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" downloads/* \
+            --repo "$GITHUB_REPOSITORY" --draft --title "RustXMALab ${GITHUB_REF_NAME#v}" \
+            --notes "See CHANGELOG.md for what is in this version."

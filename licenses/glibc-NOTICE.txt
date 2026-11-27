@@ -1,0 +1,33 @@
+GNU C Library (glibc): copyright and licence
+============================================
+
+Code ported from: glibc stdlib/random_r.c (__srandom_r and __random_r for the default
+generator TYPE_3), in crates/xma-vision/src/crand.rs, so that the random draws of the
+cube calibration are the ones the C++ XMALab makes on Linux.
+
+Licence: LGPL-2.1-or-later. RustXMALab uses this code under the GPL version 3 (LICENSE at
+the top of this archive), as section 3 of the LGPL 2.1 permits; the LGPL 2.1 text is in
+LGPL-2.1.txt.
+
+The source file random_r.c was not on the machine this archive was made on, so any
+further notice it carries could not be checked. The copyright and licence lines below are
+those of the installed header stdlib.h (glibc 2.44, /usr/include/stdlib.h), which
+declares these functions:
+
+/* Copyright (C) 1991-2026 Free Software Foundation, Inc.
+   Copyright The GNU Toolchain Authors.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <https://www.gnu.org/licenses/>.  */

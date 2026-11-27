@@ -1,0 +1,71 @@
+# Crates exempt from `cargo xtask depcheck`.
+#
+# The project is pure Rust: no dependency may compile C or C++ or link a system
+# library. A crate is added here ONLY with the user's explicit approval, and
+# every entry must give the reason it is needed. Format:
+#
+# [[allow]]
+# name = "some-crate"
+# reason = "Why it is needed and why no pure-Rust alternative will do."
+
+# Approved by the author on 14 November 2026, for the GUI toolkit (eframe/egui on
+# wgpu). None of these compiles C or C++ as we build it. They
+# are the bindings through which a GUI program reaches the operating system's
+# own window system and graphics drivers, plus two false alarms.
+
+[[allow]]
+name = "x11-dl"
+reason = "Linux: loads the system's X11 libraries at run time (winit). Its build script only asks pkg-config where they are; it compiles nothing."
+
+[[allow]]
+name = "wayland-sys"
+reason = "Linux: loads the system's Wayland client library at run time (winit; the graphics driver needs the real display handle). Its build script only asks pkg-config; it compiles nothing."
+
+[[allow]]
+name = "wayland-backend"
+reason = "Linux: the Wayland protocol implementation behind winit. Its build script compiles a C helper only when its `log` feature is on, which it is not."
+
+[[allow]]
+name = "khronos-egl"
+reason = "The entry point of the system's OpenGL driver, loaded at run time by wgpu's OpenGL fallback. pkg-config is used only by its `static` feature, which is off."
+
+[[allow]]
+name = "linux-raw-sys"
+reason = "Linux: system-call numbers and structures as Rust definitions (rustix). Links no library; flagged only for its name."
+
+[[allow]]
+name = "windows-sys"
+reason = "Windows: declarations of the Windows API itself (window, file dialogs, time zone). Compiles no C or C++."
+
+[[allow]]
+name = "objc-sys"
+reason = "macOS: the system's Objective-C runtime, through which every macOS window and menu is reached. Part of the operating system."
+
+[[allow]]
+name = "core-foundation-sys"
+reason = "macOS: the system's CoreFoundation framework. Part of the operating system."
+
+[[allow]]
+name = "renderdoc-sys"
+reason = "Declarations for the RenderDoc GPU debugger used by wgpu; does nothing unless that debugger is attached. Compiles and links nothing."
+
+[[allow]]
+name = "rayon-core"
+reason = "Pure Rust. Flagged only because its manifest has a `links` key, which it uses to stop two copies being built into one program. Reached through the screenshot-comparison test tooling (egui_kittest)."
+
+# Approved by the author on 20 November 2026, after `depcheck` was made to treat a name
+# written with an underscore (`_sys`) as it treats one with a hyphen (review of that date,
+# parity-xtask finding 2). The three are the same kind as the entries above: bindings to
+# the system's own graphics drivers. None compiles C or C++.
+
+[[allow]]
+name = "glutin_wgl_sys"
+reason = "Windows: declarations of the system's OpenGL entry points (WGL), reached through wgpu's OpenGL fallback (wgpu-hal). Its build script generates Rust declarations; it links the system's opengl32, which is part of Windows. The Windows counterpart of khronos-egl."
+
+[[allow]]
+name = "glutin_egl_sys"
+reason = "Not built: an optional dependency of eframe's OpenGL (glow) backend, which is off; `cargo metadata` lists it all the same, and `cargo tree` shows nothing depending on it. Declarations of the system's EGL entry points; compiles no C or C++."
+
+[[allow]]
+name = "glutin_glx_sys"
+reason = "Not built: an optional dependency of eframe's OpenGL (glow) backend, which is off; `cargo metadata` lists it all the same, and `cargo tree` shows nothing depending on it. Declarations of the system's GLX entry points; compiles no C or C++."

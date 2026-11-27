@@ -1,0 +1,32 @@
+FFmpeg (libswscale): copyright and licence
+==========================================
+
+RustXMALab contains no FFmpeg code and does not ship FFmpeg; it can run the ffmpeg and
+ffprobe programs installed on the machine (see NOTICE.md). To give the grey values the C++
+XMALab gets from OpenCV and FFmpeg, crates/xma-video/src/ffmpeg/grey.rs reproduces the
+luma expansion of libswscale's default YUV to RGB conversion (limited-range luma expanded
+as clip((76309 * (Y - 16) + 512) >> 16)).
+
+Licence of libswscale: LGPL-2.1-or-later (text in LGPL-2.1.txt). The header of
+libswscale/swscale.h (FFmpeg 9.0.2, /usr/include/libswscale/swscale.h):
+
+/*
+ * Copyright (C) 2024 Niklas Haas
+ * Copyright (C) 2001-2011 Michael Niedermayer <michaelni@gmx.at>
+ *
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */

@@ -1,0 +1,94 @@
+RustXMALab for Linux (x86_64)
+=============================
+
+This archive holds two programs and a menu entry for them:
+
+  rustxmalab          the window program (a rewrite of XMALab 3)
+  xma                 the command-line program (information, recompute,
+                      export, edit, calibrate, track, parity)
+  rustxmalab.desktop  the menu entry for the window program
+  rustxmalab.png      the menu entry's picture
+
+Installing
+----------
+
+Unpack the archive anywhere and run the programs from that folder, or copy
+them to a folder on your PATH (for example ~/.local/bin). Nothing else is
+installed and nothing needs to be built.
+
+  ./rustxmalab                  start the window program
+  ./rustxmalab project.xma      open a project
+  ./xma info project.xma        what a project contains
+  ./xma --help                  the commands of the command-line program
+
+To add RustXMALab to the desktop's application menu by hand:
+copy rustxmalab.desktop to ~/.local/share/applications/ and rustxmalab.png to
+~/.local/share/icons/hicolor/256x256/apps/, and make sure rustxmalab is on
+your PATH (or put its full path in the desktop file's Exec= line).
+
+Settings are kept in ~/.config/RustXMALab/settings.json (or under
+$XDG_CONFIG_HOME). XMALab's own settings are never read or changed.
+
+What the programs need on the machine
+-------------------------------------
+
+Both programs link only to the C library (glibc: libc, libm, libgcc_s). They
+need the glibc version of the machine they were built on, or newer:
+
+  rustxmalab   glibc @GLIBC_rustxmalab@ or newer
+  xma          glibc @GLIBC_xma@ or newer
+
+(Check yours with `ldd --version`.)
+
+xma needs nothing more.
+
+rustxmalab loads these system libraries when it opens its window. They are part
+of every Linux desktop; on a server or a minimal install, install them with
+your package manager:
+
+  Window system, Wayland:  libwayland-client.so.0, libxkbcommon.so.0
+  Window system, X11:      libX11.so.6, libX11-xcb.so.1, libxcb.so.1,
+                           libXcursor.so.1, libXi.so.6, libxkbcommon.so.0,
+                           libxkbcommon-x11.so.0
+  Graphics:                libvulkan.so.1 with a Vulkan driver for the
+                           graphics card (Mesa, or the vendor's driver), or
+                           else libEGL.so.1 with an OpenGL ES 3 driver
+
+The program uses Wayland when it runs in a Wayland session and X11
+otherwise; only the libraries for the one in use are needed.
+
+Debian or Ubuntu:  sudo apt install libwayland-client0 libxkbcommon0
+                   libxkbcommon-x11-0 libx11-6 libx11-xcb1 libxcursor1 libxi6
+                   libvulkan1 mesa-vulkan-drivers
+Fedora:            sudo dnf install libwayland-client libxkbcommon
+                   libxkbcommon-x11 libX11 libX11-xcb libXcursor libXi
+                   vulkan-loader mesa-vulkan-drivers
+
+Video files
+-----------
+
+Uncompressed and MJPEG AVI files, Phantom .cine files and image sequences
+(TIFF, PNG, JPEG, BMP) are read by the programs themselves.
+
+Other video formats (for example H.264 or HEVC in .mp4, .mov or .avi) are
+read through FFmpeg: the programs run the ffmpeg and ffprobe executables
+installed on the machine. Install FFmpeg with your package manager
+(sudo apt install ffmpeg, or sudo dnf install ffmpeg), or put ffmpeg and
+ffprobe next to the programs, or name them with the environment variables
+XMALAB_FFMPEG and XMALAB_FFPROBE. FFmpeg is not part of this archive and is
+not needed for the formats listed above.
+
+Licence
+-------
+
+GPL-3.0-only; see LICENSE. Origin, citation and the third-party work this
+program contains are listed in NOTICE.md.
+
+THIRD-PARTY-LICENSES.txt  the licences, copyright lines and licence texts of
+                          the Rust crates the two programs are built from
+                          (linked into them statically).
+licenses/                 the copyright notices and licence texts of the
+                          works whose code was ported into the programs
+                          (OpenCV, levmar, QCustomPlot, LibTIFF, LAPACK and
+                          OpenBLAS, libstdc++, Qt, glibc and others; see
+                          licenses/README.txt), and XMALab's own licence.

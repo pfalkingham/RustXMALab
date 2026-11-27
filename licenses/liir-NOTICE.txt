@@ -1,0 +1,56 @@
+Butterworth filter coefficients (liir): copyright and licence
+=============================================================
+
+Code ported from: XMALab's processing/ButterworthLowPassFilter.cpp, into
+crates/xma-vision/src/filter.rs. XMALab's file takes the Butterworth low-pass
+coefficients (dcof_bwlp, ccof_bwlp, sf_bwlp, binomial_mult) from liir.c of Exstrom
+Laboratories; its header, reproduced below, gives the source and the licence.
+
+liir: Copyright (C) 2007 Exstrom Laboratories LLC. Licence: GPL-2.0-or-later.
+RustXMALab uses it under version 3 of the GPL (LICENSE at the top of this archive).
+
+The same file of XMALab also holds a filtfilt function, which its header credits to a
+Stack Overflow answer. That function is not ported: RustXMALab's zero-phase filtering is
+its own code, written from a mathematical specification (see NOTICE.md). The header's
+last lines, which name that answer, are therefore left out below.
+
+The header of XMALab's processing/ButterworthLowPassFilter.cpp, up to those lines:
+
+/* The computation of the butterworth low pass filter is taken from 
+* http ://www.exstrom.com/journal/sigproc/liir.c with the following Copyright
+*
+*                            COPYRIGHT
+*
+*  liir - Recursive digital filter functions
+*  Copyright (C) 2007 Exstrom Laboratories LLC
+*
+*  This program is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  A copy of the GNU General Public License is available on the internet at:
+*
+*  http://www.gnu.org/copyleft/gpl.html
+*
+*  or you can write to:
+*
+*  The Free Software Foundation, Inc.
+*  675 Mass Ave
+*  Cambridge, MA 02139, USA
+*
+*  You can contact Exstrom Laboratories LLC via Email at:
+*
+*  stefan(AT)exstrom.com
+*
+*  or you can write to:
+*
+*  Exstrom Laboratories LLC
+*  P.O. Box 7651
+*  Longmont, CO 80501, USA
+*

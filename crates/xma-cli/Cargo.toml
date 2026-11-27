@@ -1,0 +1,33 @@
+[package]
+name = "xma-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[lib]
+name = "xma_cli"
+path = "src/lib.rs"
+
+[[bin]]
+name = "xma"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+xma-engine.workspace = true
+xma-io.workspace = true
+xma-model.workspace = true
+xma-oracle.workspace = true
+# The detection and tracker-step tables of `xma parity` (src/parity/steps.rs): the dump's
+# frames are read with xma-video, detection is called directly in xma-vision.
+xma-vision.workspace = true
+xma-video.workspace = true
+
+[dev-dependencies]
+# Writes the 16-bit PNG copy of the pig trial in tests/track.rs; reads the TIFFs of
+# tests/undistort.rs.
+image.workspace = true

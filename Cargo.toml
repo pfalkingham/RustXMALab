@@ -1,0 +1,97 @@
+[workspace]
+resolver = "3"
+members = ["crates/*", "xtask"]
+exclude = ["spikes", "oracle"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-only"
+publish = false
+rust-version = "1.99"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+# Ported numeric code keeps the index loops of the C++ and OpenCV it follows line by line;
+# clippy 1.100 flags many more of them than 1.99 did.
+needless_range_loop = "allow"
+
+[workspace.dependencies]
+# Workspace crates.
+xma-model = { path = "crates/xma-model" }
+xma-vision = { path = "crates/xma-vision" }
+xma-video = { path = "crates/xma-video" }
+xma-io = { path = "crates/xma-io" }
+xma-engine = { path = "crates/xma-engine" }
+xma-oracle = { path = "crates/xma-oracle" }
+
+# Third-party crates. Pure Rust only; `cargo xtask depcheck` enforces this.
+serde_json = "1.0.150"
+# No default features: `macros` (the `matrix!` family, a proc-macro crate) is not used.
+nalgebra = { version = "0.35", default-features = false, features = ["std"] }
+miniz_oxide = { version = "0.9", default-features = false }
+quick-xml = { version = "0.42", default-features = false }
+# Local time for the date stamped on a saved project (parity ledger F27).
+jiff = { version = "0.2", default-features = false, features = ["std", "tz-system", "tzdb-zoneinfo", "tzdb-bundle-platform"] }
+# Still images: calibration and grid images, image sequences (xma-video).
+image = { version = "0.25", default-features = false, features = ["png", "tiff", "jpeg", "bmp"] }
+
+# GUI. Only xma-app may depend on these (`cargo xtask depcheck`). egui and its
+# add-ons are pinned together and upgraded together.
+eframe = { version = "0.37", default-features = false, features = ["wgpu", "wayland", "x11", "default_fonts"] }
+egui = { version = "0.37", features = ["serde"] }
+egui_tiles = { version = "0.18", features = ["serde"] }
+egui_plot = "0.38"
+egui_kittest = { version = "0.37", features = ["wgpu", "snapshot"] }
+rfd = { version = "0.18", default-features = false, features = ["xdg-portal"] }
+serde = { version = "1", features = ["derive"] }
+bytemuck = { version = "1", features = ["derive"] }
+
+# Line tables only: backtraces keep file and line, and the 300 test programs link faster and
+# take far less disk than with full debug information. Set `debug = true` to use a debugger.
+[profile.dev]
+opt-level = 0
+debug = "line-tables-only"
+
+# Numeric code in dependencies is painfully slow unoptimised; this keeps
+# debug builds of our own crates fast to compile while dependencies run quickly. Level 2,
+# because the image decoders and the inflater read every test frame and every project.
+[profile.dev.package."*"]
+opt-level = 2
+debug = false
+
+# The numeric crates are optimised in debug builds too: their tests replay whole trials
+# against the reference data and are many times slower unoptimised. Results do not depend
+# on the optimisation level (Rust never reorders or fuses floating-point operations).
+[profile.dev.package.xma-vision]
+opt-level = 2
+
+[profile.dev.package.xma-engine]
+opt-level = 2
+
+[profile.dev.package.xma-io]
+opt-level = 2
+
+[profile.dev.package.xma-model]
+opt-level = 2
+
+[profile.dev.package.xma-oracle]
+opt-level = 2
+
+[profile.dev.package.xma-cli]
+opt-level = 2
+
+[profile.dev.package.xma-video]
+opt-level = 2
+
+[profile.dev.package.xma-app]
+opt-level = 1
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+debug = "line-tables-only"

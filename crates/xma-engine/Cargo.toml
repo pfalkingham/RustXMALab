@@ -1,0 +1,27 @@
+[package]
+name = "xma-engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+xma-model.workspace = true
+xma-vision.workspace = true
+xma-video.workspace = true
+xma-io.workspace = true
+jiff.workspace = true
+# Already a dependency of xma-model and xma-vision: the 4x4 and dynamic matrices of the
+# calibration actions.
+nalgebra.workspace = true
+# The PNG of the Blender-scene export (already the workspace's image reader, xma-video).
+image.workspace = true
+
+[dev-dependencies]
+xma-oracle.workspace = true
+# Reads the numbers Blender writes in tests/blender_scene.rs (already xma-oracle's).
+serde_json.workspace = true

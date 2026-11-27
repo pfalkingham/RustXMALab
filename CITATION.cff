@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you publish research done with RustXMALab, please cite the validation paper of the original XMALab, given below."
+title: RustXMALab
+type: software
+version: 0.1.0
+license: GPL-3.0-only
+repository-code: "https://github.com/pfalkingham/RustXMALab"
+authors:
+  - family-names: Falkingham
+    given-names: Peter L.
+preferred-citation:
+  type: article
+  title: "Validation of XMALab software for marker-based XROMM"
+  authors:
+    - family-names: Knörlein
+      given-names: Benjamin J.
+    - family-names: Baier
+      given-names: David B.
+    - family-names: Gatesy
+      given-names: Stephen M.
+    - family-names: Laurence-Chasen
+      given-names: J. D.
+    - family-names: Brainerd
+      given-names: Elizabeth L.
+  journal: "Journal of Experimental Biology"
+  volume: 219
+  start: 3701
+  end: 3711
+  year: 2016
+  doi: "10.1242/jeb.145383"
