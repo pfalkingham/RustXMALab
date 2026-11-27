@@ -41,18 +41,26 @@ gives the full record behind each one.
 Ready-made programs are on the
 [Releases page](https://github.com/pfalkingham/RustXMALab/releases):
 
-| System | Download |
-|---|---|
-| Linux, 64-bit PC | `rustxmalab-<version>-x86_64-linux.tar.gz` (with a menu entry; see its `INSTALL.txt`) |
-| Windows, 64-bit PC | `rustxmalab-<version>-x86_64-windows.zip` |
-| macOS, Apple Silicon, macOS 11 or later | `rustxmalab-<version>-aarch64-macos.tar.gz` |
+| System | Installer | Portable (unpack and run) |
+|---|---|---|
+| Windows, 64-bit PC | `rustxmalab-<version>-x86_64-windows-setup.exe` | `rustxmalab-<version>-x86_64-windows.zip` |
+| macOS, Apple Silicon, macOS 11 or later | `rustxmalab-<version>-aarch64-macos.dmg` | `rustxmalab-<version>-aarch64-macos.tar.gz` |
+| Linux, 64-bit PC | (none) | `rustxmalab-<version>-x86_64-linux.tar.gz`, with a menu entry; see its `INSTALL.txt` |
 
-Unpack the download anywhere and run `rustxmalab` (the window) or `xma` (the
-command-line program). There is no installer yet. The macOS programs are not
-signed, so macOS blocks them at first; after unpacking, run this once in
-Terminal in the unpacked folder:
-
-    xattr -d com.apple.quarantine rustxmalab xma
+- **Windows:** run the setup program. It installs for your user only, so it
+  needs no administrator rights, and adds RustXMALab to the Start menu. The
+  installer is not yet signed, so Windows may say "Windows protected your PC":
+  click "More info", then "Run anyway".
+- **macOS:** open the `.dmg` and drag RustXMALab to Applications. The app is
+  not yet signed by Apple, so the first time you open it macOS refuses; go to
+  System Settings › Privacy & Security, scroll down and click "Open Anyway"
+  beside RustXMALab. After that it opens normally. The command-line program is
+  inside the app, at `RustXMALab.app/Contents/MacOS/xma`.
+- **Linux:** unpack the archive anywhere and run `rustxmalab`.
+- **Portable archives:** unpack anywhere and run `rustxmalab` (the window) or
+  `xma` (the command-line program). On macOS the bare programs are blocked
+  until you run `xattr -d com.apple.quarantine rustxmalab xma` once in
+  Terminal in the unpacked folder; the `.dmg` avoids that.
 
 Uncompressed and MJPEG AVI, Phantom `.cine` and image sequences are read
 directly. Other videos (H.264, HEVC) need [FFmpeg](https://ffmpeg.org)'s

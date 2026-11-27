@@ -81,7 +81,7 @@ The layout, the three workspaces, the panels, the menus and the shortcuts are XM
 ## What is not there yet
 
 - **Exports:** XROMM VR, DLT, MayaCam version 1, and "XRayProject Matlab Format". Every other export is there.
-- **Windows and macOS builds** are made by the repository's automatic build (Windows on x86_64, macOS on Apple Silicon) and are not covered by the project's own checks, which run on Linux: treat them as untried. They are bare program files, with no installer, no menu icon on Windows and no application bundle on macOS. The Linux archive made on the development machine needs a recent system (glibc 2.44).
+- **Windows and macOS builds** are made by the repository's automatic build (Windows on x86_64, macOS on Apple Silicon) and are not covered by the project's own checks, which run on Linux: treat them as untried. Windows has a setup program and macOS a disk image with the app, neither yet signed, so each system warns once (the README says how to get past it). The Linux archive is built on Ubuntu 24.04 and needs a system at least that recent (glibc 2.39).
 
 ## What has not been checked
 

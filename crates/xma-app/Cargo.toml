@@ -36,3 +36,41 @@ bytemuck.workspace = true
 [dev-dependencies]
 egui_kittest.workspace = true
 xma-oracle.workspace = true
+
+# Installers made by cargo-packager in CI (.github/workflows/build-binaries.yml):
+# the macOS application bundle and the Windows setup program. Paths are relative
+# to this folder. `cargo xtask licenses` writes target/dist/THIRD-PARTY-LICENSES.txt
+# before packaging.
+[package.metadata.packager]
+product-name = "RustXMALab"
+identifier = "io.github.pfalkingham.rustxmalab"
+publisher = "Peter Falkingham"
+authors = ["Peter Falkingham"]
+description = "Marker tracking and 3D reconstruction from X-ray video (XROMM)"
+homepage = "https://github.com/pfalkingham/RustXMALab"
+copyright = "Copyright Peter Falkingham. Based on XMALab, copyright Brown University. GPL-3.0-only."
+category = "Education"
+license-file = "../../LICENSE"
+icons = ["assets/icons/RustXMALab-Icon.png"]
+resources = [
+    "../../README.md",
+    "../../LICENSE",
+    "../../NOTICE.md",
+    "../../licenses",
+    "../../target/dist/THIRD-PARTY-LICENSES.txt",
+]
+
+[[package.metadata.packager.binaries]]
+path = "rustxmalab"
+main = true
+
+[[package.metadata.packager.binaries]]
+path = "xma"
+main = false
+
+[package.metadata.packager.macos]
+minimum-system-version = "11.0"
+
+[package.metadata.packager.nsis]
+installer-mode = "currentUser"
+installer-icon = "assets/icons/RustXMALab.ico"

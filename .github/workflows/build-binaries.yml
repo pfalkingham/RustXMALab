@@ -1,8 +1,10 @@
 name: build-binaries
 
-# Builds the programs for Linux, Windows and macOS on every push to master.
-# A tag named v* (for example v0.1.0) also makes a draft release on GitHub with
-# the three downloads attached; publish it from the Releases page after checking.
+# Builds the programs for Linux, Windows and macOS on every push to master:
+# installers for Windows (setup program) and macOS (disk image with the app), and
+# portable archives of the bare programs for all three systems. A tag named v*
+# (for example v0.1.0) also makes a draft release on GitHub with all of them
+# attached; publish it from the Releases page after checking.
 
 on:
   push:
@@ -44,19 +46,29 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo build --release --locked --bin rustxmalab --bin xma
-      - name: Package
+      # Writes target/dist/THIRD-PARTY-LICENSES.txt, which both packages carry.
+      - run: cargo xtask licenses
+      - run: cargo install cargo-packager --locked --version 0.11.8
+      - name: Setup program (cargo-packager, NSIS; installs for the current user)
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          cargo packager --release --formats nsis
+          mkdir -p dist
+          cp target/release/*-setup.exe "dist/rustxmalab-${version}-x86_64-windows-setup.exe"
+      - name: Zip (the programs without installing)
         run: |
           version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
           stem="rustxmalab-${version}-x86_64-windows"
           mkdir -p "dist/$stem"
-          cp target/release/rustxmalab.exe target/release/xma.exe README.md LICENSE NOTICE.md "dist/$stem/"
+          cp target/release/rustxmalab.exe target/release/xma.exe README.md LICENSE NOTICE.md target/dist/THIRD-PARTY-LICENSES.txt "dist/$stem/"
           cp -r licenses "dist/$stem/"
-          cargo xtask licenses --out "dist/$stem/THIRD-PARTY-LICENSES.txt"
           cd dist && 7z a -tzip "$stem.zip" "$stem" > /dev/null
       - uses: actions/upload-artifact@v4
         with:
           name: windows
-          path: dist/*.zip
+          path: |
+            dist/*.zip
+            dist/*-setup.exe
 
   macos:
     runs-on: macos-15
@@ -70,20 +82,41 @@ jobs:
           targets: aarch64-apple-darwin
       - uses: Swatinem/rust-cache@v2
       - run: cargo build --release --locked --target aarch64-apple-darwin --bin rustxmalab --bin xma
-      - name: Package
+      # Writes target/dist/THIRD-PARTY-LICENSES.txt, which the bundle carries.
+      - run: cargo xtask licenses
+      - run: cargo install cargo-packager --locked --version 0.11.8
+      # RustXMALab.app, with xma beside rustxmalab in Contents/MacOS.
+      - run: cargo packager --release --target aarch64-apple-darwin --formats app
+      # Ad-hoc signature: without an Apple Developer ID the app cannot be notarised,
+      # but a signed bundle lets macOS offer "Open Anyway" instead of calling it damaged.
+      - name: Sign ad hoc
+        run: |
+          app=target/aarch64-apple-darwin/release/RustXMALab.app
+          codesign --force --deep --sign - "$app"
+          codesign --verify --deep --strict --verbose=2 "$app"
+      - name: Disk image
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          mkdir -p dist/dmg
+          cp -R target/aarch64-apple-darwin/release/RustXMALab.app dist/dmg/
+          ln -s /Applications dist/dmg/Applications
+          hdiutil create -volname RustXMALab -srcfolder dist/dmg -ov -format UDZO \
+            "dist/rustxmalab-${version}-aarch64-macos.dmg"
+      - name: Portable archive (the bare programs, without the app)
         run: |
           version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
           stem="rustxmalab-${version}-aarch64-macos"
           mkdir -p "dist/$stem"
           cp target/aarch64-apple-darwin/release/rustxmalab target/aarch64-apple-darwin/release/xma "dist/$stem/"
-          cp README.md LICENSE NOTICE.md "dist/$stem/"
+          cp README.md LICENSE NOTICE.md target/dist/THIRD-PARTY-LICENSES.txt "dist/$stem/"
           cp -r licenses "dist/$stem/"
-          cargo xtask licenses --out "dist/$stem/THIRD-PARTY-LICENSES.txt"
           tar -czf "dist/$stem.tar.gz" -C dist "$stem"
       - uses: actions/upload-artifact@v4
         with:
           name: macos
-          path: dist/*.tar.gz
+          path: |
+            dist/*.dmg
+            dist/*.tar.gz
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')

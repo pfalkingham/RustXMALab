@@ -14,5 +14,7 @@ The first public release.
   stored in the project, tracking at full bit depth, and export to Blender.
 - Known faults of XMALab 3 are fixed; [Coming from XMALab 3](docs/for-xmalab-users.md)
   lists every difference.
-- Builds for Linux (x86_64), Windows (x86_64) and macOS (Apple Silicon). Only the
-  Linux build has been tried.
+- Downloads for Windows (x86_64: a setup program and a zip), macOS (Apple
+  Silicon: a disk image with the app) and Linux (x86_64: an archive). Only the
+  Linux build has been tried; the Windows installer and the macOS app are not
+  yet signed.
