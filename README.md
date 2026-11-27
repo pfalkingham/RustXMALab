@@ -43,9 +43,9 @@ Ready-made programs are on the
 
 | System | Installer | Portable (unpack and run) |
 |---|---|---|
-| Windows, 64-bit PC | `rustxmalab-<version>-x86_64-windows-setup.exe` | `rustxmalab-<version>-x86_64-windows.zip` |
-| macOS, Apple Silicon, macOS 11 or later | `rustxmalab-<version>-aarch64-macos.dmg` | `rustxmalab-<version>-aarch64-macos.tar.gz` |
-| Linux, 64-bit PC | `rustxmalab-<version>-x86_64.AppImage`, or `rustxmalab_<version>_amd64.deb` for Ubuntu and Debian | `rustxmalab-<version>-x86_64-linux.tar.gz`, with a menu entry; see its `INSTALL.txt` |
+| Windows, 64-bit PC | `rustxmalab-<version>-x86_64-windows-setup.exe` | `rustxmalab-<version>-x86_64-windows-portable.zip` |
+| macOS, Apple Silicon, macOS 11 or later | `rustxmalab-<version>-aarch64-macos.dmg` | `rustxmalab-<version>-aarch64-macos-portable.tar.gz` |
+| Linux, 64-bit PC | `rustxmalab-<version>-x86_64-linux.AppImage`, or `rustxmalab-<version>-x86_64-linux.deb` for Ubuntu and Debian | `rustxmalab-<version>-x86_64-linux-portable.tar.gz`, with a menu entry; see its `INSTALL.txt` |
 
 - **Windows:** run the setup program. It installs into
   `C:\Program Files\RustXMALab` (so it asks for administrator rights) and
@@ -61,7 +61,7 @@ Ready-made programs are on the
   the file's Properties) and open it. It needs FUSE 2, which some recent
   systems lack (`sudo apt install libfuse2` on Ubuntu). On Ubuntu and Debian
   the `.deb` installs RustXMALab with its menu entry (`sudo apt install
-  ./rustxmalab_<version>_amd64.deb`). All Linux downloads need glibc 2.35 or
+  ./rustxmalab-<version>-x86_64-linux.deb`). All Linux downloads need glibc 2.35 or
   later (Ubuntu 22.04 or newer).
 - **Portable archives:** unpack anywhere and run `rustxmalab` (the window) or
   `xma` (the command-line program). On macOS the bare programs are blocked

@@ -42,9 +42,9 @@ jobs:
           version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
           cargo packager --release --formats appimage,deb
           mkdir -p dist
-          cp target/dist/*.tar.gz dist/
-          cp target/release/*.AppImage "dist/rustxmalab-${version}-x86_64.AppImage"
-          cp target/release/*.deb "dist/rustxmalab_${version}_amd64.deb"
+          cp target/dist/rustxmalab-*-linux.tar.gz "dist/rustxmalab-${version}-x86_64-linux-portable.tar.gz"
+          cp target/release/*.AppImage "dist/rustxmalab-${version}-x86_64-linux.AppImage"
+          cp target/release/*.deb "dist/rustxmalab-${version}-x86_64-linux.deb"
       - uses: actions/upload-artifact@v4
         with:
           name: linux
@@ -75,7 +75,7 @@ jobs:
       - name: Zip (the programs without installing)
         run: |
           version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
-          stem="rustxmalab-${version}-x86_64-windows"
+          stem="rustxmalab-${version}-x86_64-windows-portable"
           mkdir -p "dist/$stem"
           cp target/release/rustxmalab.exe target/release/xma.exe README.md LICENSE NOTICE.md target/dist/THIRD-PARTY-LICENSES.txt "dist/$stem/"
           cp -r licenses "dist/$stem/"
@@ -122,7 +122,7 @@ jobs:
       - name: Portable archive (the bare programs, without the app)
         run: |
           version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
-          stem="rustxmalab-${version}-aarch64-macos"
+          stem="rustxmalab-${version}-aarch64-macos-portable"
           mkdir -p "dist/$stem"
           cp target/aarch64-apple-darwin/release/rustxmalab target/aarch64-apple-darwin/release/xma "dist/$stem/"
           cp README.md LICENSE NOTICE.md target/dist/THIRD-PARTY-LICENSES.txt "dist/$stem/"
@@ -150,8 +150,9 @@ jobs:
       - name: Check the seven downloads
         run: |
           ls -l downloads
-          for pattern in '*-windows-setup.exe' '*-windows.zip' '*-macos.dmg' '*-macos.tar.gz' \
-                         '*.AppImage' '*.deb' '*-linux.tar.gz'; do
+          for pattern in '*-windows-setup.exe' '*-windows-portable.zip' '*-macos.dmg' \
+                         '*-macos-portable.tar.gz' '*-linux.AppImage' '*-linux.deb' \
+                         '*-linux-portable.tar.gz'; do
             n=$(find downloads -maxdepth 1 -name "$pattern" | wc -l)
             [ "$n" -eq 1 ] || { echo "expected one $pattern, found $n"; exit 1; }
           done
@@ -162,9 +163,9 @@ jobs:
           cat > notes.md <<'NOTES'
           | System | Installer | Portable (unpack and run) |
           |---|---|---|
-          | Windows, 64-bit | `...-windows-setup.exe` | `...-windows.zip` |
-          | macOS, Apple Silicon, macOS 11 or later | `...-macos.dmg` | `...-macos.tar.gz` |
-          | Linux, 64-bit, glibc 2.35 or later | `...x86_64.AppImage`, or `..._amd64.deb` for Ubuntu and Debian | `...-linux.tar.gz` |
+          | Windows, 64-bit | `...-windows-setup.exe` | `...-windows-portable.zip` |
+          | macOS, Apple Silicon, macOS 11 or later | `...-macos.dmg` | `...-macos-portable.tar.gz` |
+          | Linux, 64-bit, glibc 2.35 or later | `...-linux.AppImage`, or `...-linux.deb` for Ubuntu and Debian | `...-linux-portable.tar.gz` |
 
           The installers are not yet signed, so Windows and macOS warn the first time;
           the README's Download section says how to get past it. What is new is in
